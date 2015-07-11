@@ -16,10 +16,18 @@ $(document).ready(function () {
         'Diciembre'
     ];
     
+    var contaminants = [
+        'o3', 'so2', 'no2', 'co', 'pm10', 'sh2'
+    ];
+    
     var $container = $("#parallel-container");
     var $applyButton = $("#apply");
     var $startDate = $("#startDate");
     var $endDate = $("#endDate");
+    
+    function isContaminantEnabled(contaminant){
+        return $("#check-"+contaminant).is(':checked');
+    }
     
     $applyButton.click(createChart);
     
@@ -45,7 +53,6 @@ $(document).ready(function () {
             success: initParallelCoordinates
         });
 
-
         var dimensions = {
             station: 'Estación',
             year: 'Año',
@@ -66,8 +73,13 @@ $(document).ready(function () {
         //All numbers by default:
         var props = Object.getOwnPropertyNames(dimensions);
         for (var i in props) {
-            var name = dimensions[props[i]];
-
+            var prop = props[i];
+            
+            if($.inArray(prop, contaminants) !== -1 && !isContaminantEnabled(prop)){
+                continue;
+            }
+            
+            var name = dimensions[prop];
             dataTypes[name] = 'number';
             dimensionNames.push(name);
         }
@@ -107,16 +119,25 @@ $(document).ready(function () {
                 parallelRow[dimensions.year] = Number(yearPartFormat(date));
                 parallelRow[dimensions.month] = getMonthFromDate(date);
                 parallelRow[dimensions.day] = Number(dayPartFormat(date));
-                parallelRow[dimensions.o3] = contaminantToNumber(row.o3_d);
-                parallelRow[dimensions.so2] = contaminantToNumber(row.so2_d);
-                parallelRow[dimensions.no2] = contaminantToNumber(row.no2_d);
-                parallelRow[dimensions.co] = contaminantToNumber(row.co_d);
-                parallelRow[dimensions.pm10] = contaminantToNumber(row.pm10_d);
-                parallelRow[dimensions.sh2] = contaminantToNumber(row.sh2_d);
+                
+                function addContaminantData(contaminant){
+                    if(isContaminantEnabled(contaminant)){
+                        parallelRow[dimensions[contaminant]] = contaminantToNumber(row[contaminant+'_d']);
+                    }
+                }
+                
+                addContaminantData('o3');
+                addContaminantData('so2');
+                addContaminantData('no2');
+                addContaminantData('co');
+                addContaminantData('pm10');
+                addContaminantData('sh2');
+                
 
                 parallelsData.push(parallelRow);
             }
 
+            console.log(parallelsData);
             var colorScale = d3.scale.category10();
 
             var pc = d3.parcoords()("#parallel-container")
