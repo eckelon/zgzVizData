@@ -4,117 +4,18 @@
         <title>AirZGZ</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <!-- Libraries -->
         <script src="lib/d3/d3.min.js"></script>
         <script src="lib/jquery/jquery-1.11.3.min.js"></script>
         <script src="lib/d3/parcoords/d3.parcoords.js"></script>
         <link rel="stylesheet" href="lib/d3/parcoords/d3.parcoords.css" />
+        
+        <!-- Our scripts -->
+        <script src="js/parallel-coords.js"></script>
     </head>
     <body>
-        <div id="container" class="parcoords" style="width:1000px;height:300px">
+        <div id="parallel-container" class="parcoords" style="width:100%; height:300px">
         </div>
-        <script>
-            $(document).ready(function(){
-                $.ajax({
-                    url: '/data',
-                    type: 'GET',
-                    dataType: 'JSON',
-                    success: initParallelCoordinates
-                });
-                
-                var monthNames = [
-                    'Enero',
-                    'Febrero',
-                    'Marzo',
-                    'Abril',
-                    'Mayo',
-                    'Junio',
-                    'Julio',
-                    'Agosto',
-                    'Septiembre',
-                    'Octubre',
-                    'Noviembre',
-                    'Diciembre'
-                ];
-                
-                var dimensionNames = [
-                    'Estación',
-                    'Año',
-                    'Mes',
-                    'Día',
-                    'O\u2083',
-                    'SO\u2082',
-                    'NO\u2082',
-                    'CO',
-                    'PM\u2081\u2080',
-                    'SH\u2082',
-                ];
-                
-                
-                var dataTypes = {};
-                
-                for (var i = 0, max = dimensionNames.length; i < max; i++) {
-                    dataTypes[dimensionNames[i]] = 'number';
-                }
-                
-                dataTypes[dimensionNames[0]] = 'string';
-                dataTypes[dimensionNames[2]] = 'string';
-                
-                var timeFormat = d3.time.format('%Y-%m-%dT%H:%M:%SZ');
-                var yearPartFormat = d3.time.format('%Y');
-                var monthPartFormat = d3.time.format('%m');
-                var dayPartFormat = d3.time.format('%d');
-                
-                function contaminantToNumber(d){
-                    if(d === null || typeof d === 'object'){
-                        return NaN;
-                    }else {
-                        return Number(d);
-                    }
-                }
-                
-                function getMonthFromDate(date){
-                    return monthNames[Number(monthPartFormat(date)) - 1];
-                }
-                
-                function initParallelCoordinates(data){
-                    var parallelsData = [
-                    ];
-                    
-                    for (var i = 0, max = data.rows.length; i < max; i++) {
-                        var row = data.rows[i];
-
-                        var date = timeFormat.parse(row.fecha_dt);
-                        
-                        var parallelRow = {};
-                        
-                        parallelRow[dimensionNames[0]] = row.estacion;
-                        parallelRow[dimensionNames[1]] = Number(yearPartFormat(date));
-                        parallelRow[dimensionNames[2]] = getMonthFromDate(date);
-                        parallelRow[dimensionNames[3]] = Number(dayPartFormat(date));
-                        parallelRow[dimensionNames[4]] = contaminantToNumber(row.o3_d);
-                        parallelRow[dimensionNames[5]] = contaminantToNumber(row.so2_d);
-                        parallelRow[dimensionNames[6]] = contaminantToNumber(row.no2_d);
-                        parallelRow[dimensionNames[7]] = contaminantToNumber(row.co_d);
-                        parallelRow[dimensionNames[8]] = contaminantToNumber(row.pm10_d);
-                        parallelRow[dimensionNames[9]] = contaminantToNumber(row.sh2_d);
-
-                        parallelsData.push(parallelRow);
-                    }
-                    
-                    console.log(parallelsData);
-
-                    var pc = d3.parcoords()("#container")
-                        .data(parallelsData)
-                        .types(dataTypes)
-                        .dimensions(dimensionNames)
-                        .margin({ top: 24, left: 100, bottom: 12, right: 0 })
-                        .mode("queue") 
-                        .render()
-                        .brushMode("1D-axes")  // enable brushing
-                        .reorderable()
-                        ;
-                }
-            });
-        </script>
     </body>
 </html>
