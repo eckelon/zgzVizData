@@ -15,42 +15,43 @@ $(document).ready(function () {
         'Noviembre',
         'Diciembre'
     ];
-    
+
     var contaminants = [
         'o3', 'so2', 'no2', 'co', 'pm10', 'sh2'
     ];
-    
-    var $container = $("#parallel-container");
+
+    var $parallelContainer = $("#parallel-container");
+    var $tableContainer = $("#table-container");
     var $applyButton = $("#apply");
     var $startDate = $("#startDate");
     var $endDate = $("#endDate");
-    
-    function isContaminantEnabled(contaminant){
-        return $("#check-"+contaminant).is(':checked');
+
+    function isContaminantEnabled(contaminant) {
+        return $("#check-" + contaminant).is(':checked');
     }
-    
+
     $applyButton.click(createChart);
-    
+
     /**
      * Check/uncheck all
      */
-    $("#allContaminantsCheck").click(function(){
+    $("#allContaminantsCheck").click(function () {
         var isAnyChecked = $("input[id^='check-']").filter(':checked').size();
         $("input[id^='check-']").prop('checked', !isAnyChecked);
     });
-    
+
     var datepickerFormat = d3.time.format("%Y-%m-%d");
-    
+
     var today = new Date();
     var todayMinus1Year = new Date(today - 86400 * 1000 * 365);
-    
+
     $endDate.val(datepickerFormat(today));
     $startDate.val(datepickerFormat(todayMinus1Year));//About one year before...
-    
-    function createChart(){
-        $container.html('<div class="loadingIndicator"><i class="uk-icon uk-icon-spinner uk-icon-spin"></i></div>');
-        $container.show();
-        
+
+    function createChart() {
+        $parallelContainer.html('<div class="loadingIndicator"><i class="uk-icon uk-icon-spinner uk-icon-spin"></i></div>');
+        $parallelContainer.show();
+
         $.ajax({
             url: '/data',
             data: {
@@ -59,7 +60,10 @@ $(document).ready(function () {
             },
             type: 'GET',
             dataType: 'JSON',
-            success: initParallelCoordinates
+            success: function(data){
+                initTable(data);
+                initParallelCoordinates(data);
+            }
         });
 
         var dimensions = {
@@ -83,11 +87,11 @@ $(document).ready(function () {
         var props = Object.getOwnPropertyNames(dimensions);
         for (var i in props) {
             var prop = props[i];
-            
-            if($.inArray(prop, contaminants) !== -1 && !isContaminantEnabled(prop)){
+
+            if ($.inArray(prop, contaminants) !== -1 && !isContaminantEnabled(prop)) {
                 continue;
             }
-            
+
             var name = dimensions[prop];
             dataTypes[name] = 'number';
             dimensionNames.push(name);
@@ -114,8 +118,8 @@ $(document).ready(function () {
         }
 
         function initParallelCoordinates(data) {
-            $container.find('.loadingIndicator').remove();
-            
+            $parallelContainer.find('.loadingIndicator').remove();
+
             var parallelsData = [
             ];
 
@@ -130,20 +134,20 @@ $(document).ready(function () {
                 parallelRow[dimensions.year] = Number(yearPartFormat(date));
                 parallelRow[dimensions.month] = getMonthFromDate(date);
                 parallelRow[dimensions.day] = Number(dayPartFormat(date));
-                
-                function addContaminantData(contaminant){
-                    if(isContaminantEnabled(contaminant)){
-                        parallelRow[dimensions[contaminant]] = contaminantToNumber(row[contaminant+'_d']);
+
+                function addContaminantData(contaminant) {
+                    if (isContaminantEnabled(contaminant)) {
+                        parallelRow[dimensions[contaminant]] = contaminantToNumber(row[contaminant + '_d']);
                     }
                 }
-                
+
                 addContaminantData('o3');
                 addContaminantData('so2');
                 addContaminantData('no2');
                 addContaminantData('co');
                 addContaminantData('pm10');
                 addContaminantData('sh2');
-                
+
 
                 parallelsData.push(parallelRow);
             }
@@ -158,7 +162,7 @@ $(document).ready(function () {
                     .mode("queue")
                     .autoscale()
                     .alpha(0.2)
-                    .color(function(d){
+                    .color(function (d) {
                         return colorScale(d[dimensions.station]);
                     })
                     .render()
@@ -167,8 +171,30 @@ $(document).ready(function () {
                     ;
 
 
-            pc.on('brush', function(){
+            pc.on('brush', function () {
                 console.log(pc.brushed().length);
+            });
+        }
+        
+        function initTable(data){
+            var data = [{
+                contaminant: 'a',
+                station: 'a',
+                date: 'a',
+                time: 'a',
+                value: 'a'
+            }];
+            
+            $tableContainer.show();
+            $('#table').DataTable({
+                data: data,
+                columns: [
+                    {data: 'contaminant'},
+                    {data: 'station'},
+                    {data: 'date'},
+                    {data: 'time'},
+                    {data: 'value'}
+                ]
             });
         }
     }
