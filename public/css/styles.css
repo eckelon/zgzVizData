@@ -1,4 +1,12 @@
- .parcoords .axis text {
+body {
+    margin: 10px;
+}
+
+input[data-uk-datepicker] {
+    width: 100px;
+}
+
+.parcoords .axis text {
     cursor: move;
     text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
     
