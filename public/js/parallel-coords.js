@@ -50,7 +50,6 @@ $(document).ready(function () {
     }
 
     dataTypes[dimensions.station] = 'string';
-    dataTypes[dimensions.month] = 'string';
 
     var timeFormat = d3.time.format('%Y-%m-%dT%H:%M:%SZ');
     var yearPartFormat = d3.time.format('%Y');
@@ -66,6 +65,7 @@ $(document).ready(function () {
     }
 
     function getMonthFromDate(date) {
+        return Number(monthPartFormat(date));
         return monthNames[Number(monthPartFormat(date)) - 1];
     }
 
@@ -102,15 +102,19 @@ $(document).ready(function () {
                 .dimensions(dimensionNames)
                 .margin({top: 24, left: 100, bottom: 12, right: 0})
                 .mode("queue")
-                .composite('darker')
                 .autoscale()
                 .alpha(0.2)
                 .color(function(d){
-                    return colorScale(d.estacion);
+                    return colorScale(d[dimensions.station]);
                 })
                 .render()
                 .brushMode("1D-axes")  // enable brushing
                 .reorderable()
                 ;
+                
+                
+        pc.on('brush', function(){
+            console.log(pc.brushed().length);
+        });
     }
 });
