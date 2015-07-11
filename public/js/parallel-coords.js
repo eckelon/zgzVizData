@@ -31,6 +31,14 @@ $(document).ready(function () {
     
     $applyButton.click(createChart);
     
+    /**
+     * Check/uncheck all
+     */
+    $("#allContaminantsCheck").click(function(){
+        var isAnyChecked = $("input[id^='check-']").filter(':checked').size();
+        $("input[id^='check-']").prop('checked', !isAnyChecked);
+    });
+    
     var datepickerFormat = d3.time.format("%Y-%m-%d");
     
     var today = new Date();
@@ -41,6 +49,7 @@ $(document).ready(function () {
     
     function createChart(){
         $container.html('<div class="loadingIndicator"><i class="uk-icon uk-icon-spinner uk-icon-spin"></i></div>');
+        $container.show();
         
         $.ajax({
             url: '/data',

@@ -25,48 +25,74 @@
         <link rel="stylesheet" href="css/styles.css" />
     </head>
     <body>
-        <div id="filters-container" class="uk-margin">
-            <form class="uk-form uk-form-horizontal">
-                <div class="uk-form-row">
-                    <label for="startDate" class="uk-form-label">Fecha inicio</label>
-                    <div class="uk-form-controls">
-                        <div class="uk-form-icon">
-                            <i class="uk-icon-calendar"></i>
-                            <input id="startDate" type="text" data-uk-datepicker="{format: 'YYYY-MM-DD'}">
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="uk-form-row">
-                    <label for="endDate" class="uk-form-label">Fecha fin</label>
-                    <div class="uk-form-controls">
-                        <div class="uk-form-icon">
-                            <i class="uk-icon-calendar"></i>
-                            <input id="endDate" type="text" data-uk-datepicker="{format: 'YYYY-MM-DD'}">
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="uk-form-row">
-                    <span class="uk-form-label">Contaminantes</span>
-                    <div class="uk-form-controls uk-form-controls-text">
-                        <label><input id="check-o3" type="checkbox" checked> O&#x2083;</label>
-                        <label><input id="check-so2" type="checkbox" checked> SO&#x2082;</label>
-                        <label><input id="check-no2" type="checkbox" checked> NO&#x2082;</label>
-                        <label><input id="check-co" type="checkbox" checked> CO</label>
-                        <label><input id="check-pm10" type="checkbox" checked> PM&#x2081;&#x2080;</label>
-                        <label><input id="check-sh2" type="checkbox" checked> SH&#x2082;</label>
-                    </div>
-                </div>
-
-                <div class="uk-text-center uk-margin-top">
-                    <button id="apply" type="button" class="uk-button uk-button-primary">
-                        <i class="uk-icon uk-icon-check"></i> Aplicar
-                    </button>
-                </div>
-            </form>
+        <nav class="uk-navbar uk-margin-bottom">
+            <a class="uk-navbar-brand uk-hidden-small" href="layouts_frontpage.html"><i class="uk-icon uk-icon-database"></i> AirZGZ</a>
+            <ul class="uk-navbar-nav uk-hidden-small">
+                <li class="uk-active">
+                    <a href="#">Calidad del aire</a>
+                </li>
+            </ul>
+            <a href="#offcanvas" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas></a>
+            <div class="uk-navbar-brand uk-navbar-center uk-visible-small"><i class="uk-icon uk-icon-database"></i> AirZGZ</div>
+        </nav>
+        <div id="offcanvas" class="uk-offcanvas">
+            <div class="uk-offcanvas-bar">
+                <ul class="uk-nav uk-nav-offcanvas">
+                    <li class="uk-active">
+                        <a href="#">Calidad del aire</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <div id="parallel-container" class="parcoords" style="width:100%; height:300px">
+        
+        <div class="uk-panel uk-panel-box">
+            <div id="filters-container" class="uk-margin">
+                <form class="uk-form uk-form-horizontal">
+                    <div class="uk-form-row">
+                        <label for="startDate" class="uk-form-label">Fecha inicio</label>
+                        <div class="uk-form-controls">
+                            <div class="uk-form-icon">
+                                <i class="uk-icon-calendar"></i>
+                                <input id="startDate" type="text" data-uk-datepicker="{format: 'YYYY-MM-DD'}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="uk-form-row">
+                        <label for="endDate" class="uk-form-label">Fecha fin</label>
+                        <div class="uk-form-controls">
+                            <div class="uk-form-icon">
+                                <i class="uk-icon-calendar"></i>
+                                <input id="endDate" type="text" data-uk-datepicker="{format: 'YYYY-MM-DD'}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="uk-form-row">
+                        <span id="allContaminantsCheck" class="uk-form-label">Contaminantes</span>
+                        <div class="uk-form-controls uk-form-controls-text">
+                            <label><input id="check-o3" type="checkbox" checked> O&#x2083;</label>
+                            <label><input id="check-so2" type="checkbox" checked> SO&#x2082;</label>
+                            <label><input id="check-no2" type="checkbox" checked> NO&#x2082;</label>
+                            <label><input id="check-co" type="checkbox" checked> CO</label>
+                            <label><input id="check-pm10" type="checkbox" checked> PM&#x2081;&#x2080;</label>
+                            <label><input id="check-sh2" type="checkbox" checked> SH&#x2082;</label>
+                        </div>
+                    </div>
+
+                    <div class="uk-text-center uk-margin-top">
+                        <button id="apply" type="button" class="uk-button uk-button-primary">
+                            <i class="uk-icon uk-icon-check"></i> Aplicar
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div id="parallel-container" class="parcoords" style="width:100%; height:300px; display: none;">
+            </div>
+            
+            <div class="help">
+                <i class="uk-icon uk-icon-question-circle uk-text-primary"></i> Aquí puedes visualizar las mediciones de la calidad del aire en diferentes estaciones de Zaragoza y filtrar de forma interactiva en el gráfico de coordenadas paralelas.
+            </div>
         </div>
     </body>
 </html>

@@ -30,3 +30,7 @@ input[data-uk-datepicker] {
 .parcoords svg {
     font: 12px sans-serif;
 }
+
+#allContaminantsCheck:hover {
+    cursor: pointer;
+}
