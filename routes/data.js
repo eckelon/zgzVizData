@@ -45,9 +45,11 @@ router.get('/', function (req, res, next) {
         finalSQL = finalSQL.replace(DATE_COND_PLACEHOLDER, "and fecha_dt >= '" + startDate);
     }
     
+    var cacheKey = finalSQL;
+    
     console.log(finalSQL);
     
-    cache.get('data', function (err, value) {
+    cache.get(cacheKey, function (err, value) {
         if (value) {
             generateResponse(value);
         } else {
@@ -59,7 +61,7 @@ router.get('/', function (req, res, next) {
             };
             utils.getJSON(options, function (status, data) {
                 if(data.rows && data.rows.length){
-                    cache.set('data', data);
+                    cache.set(cacheKey, data);
                 }
                 
                 generateResponse(data);
