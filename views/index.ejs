@@ -28,21 +28,27 @@
         <div id="filters-container" class="uk-margin">
             <form class="uk-form uk-form-horizontal">
                 <div class="uk-form-row">
-                    <label for="startDate" class="uk-form-label">Start date</label>
+                    <label for="startDate" class="uk-form-label">Fecha inicio</label>
                     <div class="uk-form-controls">
-                        <input id="startDate" type="text" data-uk-datepicker="{format: 'YYYY-MM-DD'}">
+                        <div class="uk-form-icon">
+                            <i class="uk-icon-calendar"></i>
+                            <input id="startDate" type="text" data-uk-datepicker="{format: 'YYYY-MM-DD'}">
+                        </div>
                     </div>
                 </div>
                 
                 <div class="uk-form-row">
-                    <label for="endDate" class="uk-form-label">End date</label>
+                    <label for="endDate" class="uk-form-label">Fecha fin</label>
                     <div class="uk-form-controls">
-                        <input id="endDate" type="text" data-uk-datepicker="{format: 'YYYY-MM-DD'}">
+                        <div class="uk-form-icon">
+                            <i class="uk-icon-calendar"></i>
+                            <input id="endDate" type="text" data-uk-datepicker="{format: 'YYYY-MM-DD'}">
+                        </div>
                     </div>
                 </div>
                 
                 <div class="uk-form-row">
-                    <span class="uk-form-label">Contaminants</span>
+                    <span class="uk-form-label">Contaminantes</span>
                     <div class="uk-form-controls uk-form-controls-text">
                         <label><input id="check-o3" type="checkbox" checked> O&#x2083;</label>
                         <label><input id="check-so2" type="checkbox" checked> SO&#x2082;</label>
@@ -55,7 +61,7 @@
 
                 <div class="uk-text-center uk-margin-top">
                     <button id="apply" type="button" class="uk-button uk-button-primary">
-                        Apply
+                        <i class="uk-icon uk-icon-check"></i> Aplicar
                     </button>
                 </div>
             </form>

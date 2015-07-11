@@ -3,7 +3,16 @@ body {
 }
 
 input[data-uk-datepicker] {
-    width: 100px;
+    width: 125px;
+}
+
+.uk-form-horizontal .uk-form-label {
+    font-weight: bold;
+}
+
+.loadingIndicator {
+    text-align: center;
+    font-size: 60px;
 }
 
 .parcoords .axis text {

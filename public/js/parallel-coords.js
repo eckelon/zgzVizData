@@ -40,7 +40,7 @@ $(document).ready(function () {
     $startDate.val(datepickerFormat(todayMinus1Year));//About one year before...
     
     function createChart(){
-        $container.html('');
+        $container.html('<div class="loadingIndicator"><i class="uk-icon uk-icon-spinner uk-icon-spin"></i></div>');
         
         $.ajax({
             url: '/data',
@@ -105,6 +105,8 @@ $(document).ready(function () {
         }
 
         function initParallelCoordinates(data) {
+            $container.find('.loadingIndicator').remove();
+            
             var parallelsData = [
             ];
 
@@ -137,7 +139,6 @@ $(document).ready(function () {
                 parallelsData.push(parallelRow);
             }
 
-            console.log(parallelsData);
             var colorScale = d3.scale.category10();
 
             var pc = d3.parcoords()("#parallel-container")
