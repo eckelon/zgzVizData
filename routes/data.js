@@ -18,7 +18,7 @@ var cache = new NodeCache({stdTTL: 60 * 10, checkperiod: 60});
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
-    function generateResponse(data) {
+    function generateResponse(data){
         res.json(data);
     }
 
