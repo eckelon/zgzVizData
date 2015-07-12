@@ -57,7 +57,6 @@ function ContaminantsChart(inputOptions){
 
     var fullTimeStringFormat = d3.time.format('%Y-%m-%dT%H:%M:%SZ');
     var datePartFormat = d3.time.format('%Y-%m-%d');
-    var hourOfDayPartFormat = d3.time.format('%H:%M:%S');
     var yearPartFormat = d3.time.format('%Y');
     var monthPartFormat = d3.time.format('%m');
     var dayPartFormat = d3.time.format('%d');
@@ -249,7 +248,6 @@ function ContaminantsChart(inputOptions){
                     tableRow.contaminant = dimensions[contaminant];
                     tableRow.station = row.estacion;
                     tableRow.date = datePartFormat(date);
-                    tableRow.time = hourOfDayPartFormat(date);
                     tableRow.value = value + ' ' + unit;
 
 

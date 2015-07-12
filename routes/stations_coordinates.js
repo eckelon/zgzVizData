@@ -21,7 +21,11 @@ router.get('/', function (req, res, next) {
         body: SQL_COORDINATES
     };
     utils.getJSON(options, function (status, coords) {
-        console.log(coords);
+        if(!coords.rows || !coords.rows.length){
+            generateResponse([]);
+            return;
+        }
+        
         var ids = coords.rows.map(function(d){
             return d.id;
         });
@@ -45,6 +49,8 @@ router.get('/', function (req, res, next) {
                     coord2: coordParts[1]
                 });
             }
+            
+            generateResponse(finalData);
         });
     });
 });

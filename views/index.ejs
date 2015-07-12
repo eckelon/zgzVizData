@@ -124,9 +124,6 @@
                                 Fecha
                             </th>
                             <th>
-                                Hora
-                            </th>
-                            <th>
                                 Valor
                             </th>
                         </tr>
@@ -148,6 +145,7 @@
                 //Initialize contaminants view
                 var contaminantsChart = new ContaminantsChart();
                 
+                return;
                 var map = L.map('map').setView([51.505, -0.09], 13);
 
                 L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
