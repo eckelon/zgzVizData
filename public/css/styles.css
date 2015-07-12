@@ -15,6 +15,10 @@ input[data-uk-datepicker] {
     font-size: 60px;
 }
 
+.uk-navbar li a:hover {
+    cursor: pointer;
+}
+
 .parcoords .axis text {
     cursor: move;
     text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;

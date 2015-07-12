@@ -38,7 +38,7 @@
     </head>
     <body>
         <nav class="uk-navbar uk-margin-bottom">
-            <a class="uk-navbar-brand uk-hidden-small" href="#"><i class="uk-icon uk-icon-database"></i> Zaragoza VizData</a>
+            <a class="uk-navbar-brand uk-hidden-small" href="/"><i class="uk-icon uk-icon-database"></i> Zaragoza VizData</a>
             <ul class="uk-navbar-nav uk-hidden-small">
                 <li class="calidadAire uk-active">
                     <a href="#"><i class="uk-icon uk-icon-bar-chart"></i> Calidad del aire</a>
@@ -181,9 +181,11 @@
                 
                 $('.calidadAire a').click(function(){
                     showTab('calidadAire');
+                    return false;
                 });
                 $('.acercaDe a').click(function(){
                     showTab('acercaDe');
+                    return false;
                 });
             })();
         </script>
