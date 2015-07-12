@@ -278,7 +278,6 @@ function ContaminantsChart(inputOptions){
                 {data: 'contaminant'},
                 {data: 'station'},
                 {data: 'date', type: 'date'},
-                {data: 'time'},
                 {data: 'value'}
             ]
         });
