@@ -48,7 +48,7 @@ router.get('/', function (req, res, next) {
     if(startDate && endDate){
         finalSQL = finalSQL.replace(DATE_COND_PLACEHOLDER, "and fecha_dt between '" + startDate +"' AND '" + endDate + "'");
     }else{
-        finalSQL = finalSQL.replace(DATE_COND_PLACEHOLDER, "and fecha_dt >= '" + startDate);
+        finalSQL = finalSQL.replace(DATE_COND_PLACEHOLDER, "and fecha_dt >= '" + startDate + "'");
     }
     
     var cacheKey = finalSQL;
