@@ -36,7 +36,7 @@ function ContaminantsChart(inputOptions){
     }
     
     function createChart() {
-        $parallelContainer.html('<div class="loadingIndicator"><i class="uk-icon uk-icon-spinner uk-icon-spin"></i></div>');
+        $parallelContainer.find('.loadingIndicator').show();
         $parallelContainer.show();
 
         $.ajax({
@@ -114,7 +114,7 @@ function ContaminantsChart(inputOptions){
         }
 
         function initParallelCoordinates(data) {
-            $parallelContainer.find('.loadingIndicator').remove();
+            $parallelContainer.find('.loadingIndicator').hide();
 
             var parallelsData = [
             ];
@@ -178,7 +178,11 @@ function ContaminantsChart(inputOptions){
             for (var i = 0, max = data.rows.length; i < max; i++) {
                 var row = data.rows[i];
                 
-                function addContaminantData(contaminant) {
+                function addContaminantData(contaminant, unit) {
+                    if(!unit){
+                        unit = 'ug/m\u00B3';
+                    }
+                    
                     if (isContaminantEnabled(contaminant)) {
                         var date = fullTimeStringFormat.parse(row.fecha_dt);
                         
@@ -190,10 +194,11 @@ function ContaminantsChart(inputOptions){
                         
                         var value = contaminantToNumber(row[contaminant + '_d']);
                         if(value === undefined){
-                            value = "---";
+                            tableRow.value = "---";
+                        }else{
+                            tableRow.value = value + ' ' + unit;
                         }
                         
-                        tableRow.value = value;
                         
                         tableData.unshift(tableRow);//Add in reverse order so latest data shous up first
                     }
@@ -202,7 +207,7 @@ function ContaminantsChart(inputOptions){
                 addContaminantData('o3');
                 addContaminantData('so2');
                 addContaminantData('no2');
-                addContaminantData('co');
+                addContaminantData('co', 'mg/m\u00B3');
                 addContaminantData('pm10');
                 addContaminantData('sh2');
             }
