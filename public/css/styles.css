@@ -23,6 +23,10 @@ input[data-uk-datepicker] {
     max-width: 800px;
 }
 
+#filters-container {
+    max-width: 600px;
+}
+
 #map {
     width: 100%; 
     max-width: 600px; 
