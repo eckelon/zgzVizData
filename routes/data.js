@@ -24,7 +24,7 @@ var cache = new NodeCache({stdTTL: 60 * 10, checkperiod: 60});
 
 function validateAndFormatInputDate(dateStr, defaultDate){
     var date = moment(dateStr, "DD/MM/YYYY");
-    if(!date.isValid){
+    if(!date.isValid()){
         date = moment(dateStr, "YYYY-MM-DD");
     }
     
