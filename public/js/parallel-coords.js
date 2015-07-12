@@ -22,6 +22,7 @@ function ContaminantsChart(inputOptions){
     var $applyButton = $("#apply");
     var $startDate = $("#startDate");
     var $endDate = $("#endDate");
+    var $opacity = $("#opacity");
 
     var datepickerFormat = d3.time.format("%Y-%m-%d");
 
@@ -98,6 +99,8 @@ function ContaminantsChart(inputOptions){
         var dimensionNames = [];
 
         var dataTypes = {};
+        
+        var opacity = $opacity.val();
 
         //All numbers by default:
         var props = Object.getOwnPropertyNames(dimensions);
@@ -167,7 +170,7 @@ function ContaminantsChart(inputOptions){
                 .margin({top: 24, left: 100, bottom: 12, right: 0})
                 .mode("queue")
                 .autoscale()
-                .alpha(0.2)
+                .alpha(opacity)
                 .color(function (d) {
                     return colorScale(d[dimensions.station]);
                 })
@@ -336,6 +339,14 @@ function ContaminantsChart(inputOptions){
     
     //Events:
     $applyButton.click(createChart);
+    $opacity.change(function(){
+        console.log($opacity.val());
+        if(parCoordsChart){
+            parCoordsChart
+                    .alpha($opacity.val())
+                    .render();
+        }
+    });
 
     /**
      * Check/uncheck all
