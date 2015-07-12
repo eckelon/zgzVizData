@@ -1,4 +1,4 @@
-/* global d3 */
+/* global d3, dataTables */
 function ContaminantsChart(inputOptions){
     var defaultOptions = {
         url: '/data'
@@ -27,6 +27,9 @@ function ContaminantsChart(inputOptions){
 
     $endDate.val(datepickerFormat(today));
     $startDate.val(datepickerFormat(todayMinus1Year));//About one year before...
+    
+    //Private variables and functions:
+    var parCoordsChart = null;
 
     function isContaminantEnabled(contaminant) {
         return $("#check-" + contaminant).is(':checked');
@@ -45,6 +48,13 @@ function ContaminantsChart(inputOptions){
             type: 'GET',
             dataType: 'JSON',
             success: function(data){
+                if(!data.rows){
+                    alert("Error al obtener los datos. Por favor inténtalo más tarde");
+                    $parallelContainer.hide();
+                    $tableContainer.hide();
+                    return;
+                }
+                
                 initTable(data);
                 initParallelCoordinates(data);
             }
@@ -84,7 +94,7 @@ function ContaminantsChart(inputOptions){
         dataTypes[dimensions.station] = 'string';
 
         var fullTimeStringFormat = d3.time.format('%Y-%m-%dT%H:%M:%SZ');
-        var datePartFormat = d3.time.format('%d/%m/%Y');
+        var datePartFormat = d3.time.format('%Y-%m-%d');
         var hourOfDayPartFormat = d3.time.format('%H:%M:%S');
         var yearPartFormat = d3.time.format('%Y');
         var monthPartFormat = d3.time.format('%m');
@@ -109,10 +119,6 @@ function ContaminantsChart(inputOptions){
             var parallelsData = [
             ];
             
-            if(!data.rows){
-                alert("Error al obtener los datos. Por favor inténtalo más tarde");
-            }
-
             for (var i = 0, max = data.rows.length; i < max; i++) {
                 var row = data.rows[i];
 
@@ -144,7 +150,7 @@ function ContaminantsChart(inputOptions){
 
             var colorScale = d3.scale.category10();
 
-            var pc = d3.parcoords()("#parallel-container")
+            parCoordsChart = d3.parcoords()("#parallel-container")
                     .data(parallelsData)
                     .types(dataTypes)
                     .dimensions(dimensionNames)
@@ -161,14 +167,12 @@ function ContaminantsChart(inputOptions){
                     ;
 
 
-            pc.on('brush', function () {
-                console.log(pc.brushed().length);
+            parCoordsChart.on('brush', function () {
+                console.log(parCoordsChart.brushed().length);
             });
         }
         
         function initTable(data){
-            
-            
             var tableData = [];
             
             for (var i = 0, max = data.rows.length; i < max; i++) {
@@ -179,14 +183,14 @@ function ContaminantsChart(inputOptions){
                         var date = fullTimeStringFormat.parse(row.fecha_dt);
                         
                         var tableRow = {};
-                        tableRow.contaminant = contaminant;
+                        tableRow.contaminant = dimensions[contaminant];
                         tableRow.station = row.estacion;
                         tableRow.date = datePartFormat(date);
                         tableRow.time = hourOfDayPartFormat(date);
                         
                         var value = contaminantToNumber(row[contaminant + '_d']);
                         if(value === undefined){
-                            value = "";
+                            value = "---";
                         }
                         
                         tableRow.value = value;
@@ -204,12 +208,21 @@ function ContaminantsChart(inputOptions){
             }
             
             $tableContainer.show();
-            $('#table').DataTable({
+            var $table  = $tableContainer.find('table');
+            
+            $table.DataTable().destroy();
+            $table.DataTable({
                 data: tableData,
+                pageLength: 100,
+                orderMulti: true,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.7/i18n/Spanish.json'
+                },
+                order: [[2, 'desc']],//Initially order by date desc
                 columns: [
                     {data: 'contaminant'},
                     {data: 'station'},
-                    {data: 'date'},
+                    {data: 'date', type: 'date'},
                     {data: 'time'},
                     {data: 'value'}
                 ]
@@ -227,6 +240,13 @@ function ContaminantsChart(inputOptions){
         var isAnyChecked = $("input[id^='check-']").filter(':checked').size();
         $("input[id^='check-']").prop('checked', !isAnyChecked);
     });
+    
+    window.onresize = function(){
+        if(parCoordsChart){
+            parCoordsChart.width($parallelContainer.width());
+            parCoordsChart.render();
+        }
+    };
     
     return self;
 }
