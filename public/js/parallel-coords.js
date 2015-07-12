@@ -1,59 +1,43 @@
 /* global d3 */
-
-$(document).ready(function () {
-    var monthNames = [
-        'Enero',
-        'Febrero',
-        'Marzo',
-        'Abril',
-        'Mayo',
-        'Junio',
-        'Julio',
-        'Agosto',
-        'Septiembre',
-        'Octubre',
-        'Noviembre',
-        'Diciembre'
-    ];
-
-    var contaminants = [
+function ContaminantsChart(inputOptions){
+    var defaultOptions = {
+        url: '/data'
+    };
+    
+    var options = $.extend({}, defaultOptions, inputOptions);
+    
+    var self = this;
+    
+    var allContaminants = [
         'o3', 'so2', 'no2', 'co', 'pm10', 'sh2'
     ];
 
+    //jQuery cached objects
     var $parallelContainer = $("#parallel-container");
     var $tableContainer = $("#table-container");
     var $applyButton = $("#apply");
     var $startDate = $("#startDate");
     var $endDate = $("#endDate");
 
-    function isContaminantEnabled(contaminant) {
-        return $("#check-" + contaminant).is(':checked');
-    }
-
-    $applyButton.click(createChart);
-
-    /**
-     * Check/uncheck all
-     */
-    $("#allContaminantsCheck").click(function () {
-        var isAnyChecked = $("input[id^='check-']").filter(':checked').size();
-        $("input[id^='check-']").prop('checked', !isAnyChecked);
-    });
-
     var datepickerFormat = d3.time.format("%Y-%m-%d");
 
+    //Initialize some values:
     var today = new Date();
     var todayMinus1Year = new Date(today - 86400 * 1000 * 365);
 
     $endDate.val(datepickerFormat(today));
     $startDate.val(datepickerFormat(todayMinus1Year));//About one year before...
 
+    function isContaminantEnabled(contaminant) {
+        return $("#check-" + contaminant).is(':checked');
+    }
+    
     function createChart() {
         $parallelContainer.html('<div class="loadingIndicator"><i class="uk-icon uk-icon-spinner uk-icon-spin"></i></div>');
         $parallelContainer.show();
 
         $.ajax({
-            url: '/data',
+            url: options.url,
             data: {
                 start: $startDate.val(),
                 end: $endDate.val()
@@ -88,7 +72,7 @@ $(document).ready(function () {
         for (var i in props) {
             var prop = props[i];
 
-            if ($.inArray(prop, contaminants) !== -1 && !isContaminantEnabled(prop)) {
+            if ($.inArray(prop, allContaminants) !== -1 && !isContaminantEnabled(prop)) {
                 continue;
             }
 
@@ -99,7 +83,9 @@ $(document).ready(function () {
 
         dataTypes[dimensions.station] = 'string';
 
-        var timeFormat = d3.time.format('%Y-%m-%dT%H:%M:%SZ');
+        var fullTimeStringFormat = d3.time.format('%Y-%m-%dT%H:%M:%SZ');
+        var datePartFormat = d3.time.format('%d/%m/%Y');
+        var hourOfDayPartFormat = d3.time.format('%H:%M:%S');
         var yearPartFormat = d3.time.format('%Y');
         var monthPartFormat = d3.time.format('%m');
         var dayPartFormat = d3.time.format('%d');
@@ -122,11 +108,15 @@ $(document).ready(function () {
 
             var parallelsData = [
             ];
+            
+            if(!data.rows){
+                alert("Error al obtener los datos. Por favor inténtalo más tarde");
+            }
 
             for (var i = 0, max = data.rows.length; i < max; i++) {
                 var row = data.rows[i];
 
-                var date = timeFormat.parse(row.fecha_dt);
+                var date = fullTimeStringFormat.parse(row.fecha_dt);
 
                 var parallelRow = {};
 
@@ -177,17 +167,45 @@ $(document).ready(function () {
         }
         
         function initTable(data){
-            var data = [{
-                contaminant: 'a',
-                station: 'a',
-                date: 'a',
-                time: 'a',
-                value: 'a'
-            }];
+            
+            
+            var tableData = [];
+            
+            for (var i = 0, max = data.rows.length; i < max; i++) {
+                var row = data.rows[i];
+                
+                function addContaminantData(contaminant) {
+                    if (isContaminantEnabled(contaminant)) {
+                        var date = fullTimeStringFormat.parse(row.fecha_dt);
+                        
+                        var tableRow = {};
+                        tableRow.contaminant = contaminant;
+                        tableRow.station = row.estacion;
+                        tableRow.date = datePartFormat(date);
+                        tableRow.time = hourOfDayPartFormat(date);
+                        
+                        var value = contaminantToNumber(row[contaminant + '_d']);
+                        if(value === undefined){
+                            value = "";
+                        }
+                        
+                        tableRow.value = value;
+                        
+                        tableData.unshift(tableRow);//Add in reverse order so latest data shous up first
+                    }
+                }
+                
+                addContaminantData('o3');
+                addContaminantData('so2');
+                addContaminantData('no2');
+                addContaminantData('co');
+                addContaminantData('pm10');
+                addContaminantData('sh2');
+            }
             
             $tableContainer.show();
             $('#table').DataTable({
-                data: data,
+                data: tableData,
                 columns: [
                     {data: 'contaminant'},
                     {data: 'station'},
@@ -198,4 +216,17 @@ $(document).ready(function () {
             });
         }
     }
-});
+    
+    //Events:
+    $applyButton.click(createChart);
+
+    /**
+     * Check/uncheck all
+     */
+    $("#allContaminantsCheck").click(function () {
+        var isAnyChecked = $("input[id^='check-']").filter(':checked').size();
+        $("input[id^='check-']").prop('checked', !isAnyChecked);
+    });
+    
+    return self;
+}
