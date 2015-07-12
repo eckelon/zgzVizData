@@ -279,7 +279,8 @@ function ContaminantsChart(inputOptions){
                 {data: 'station'},
                 {data: 'date', type: 'date'},
                 {data: 'value'}
-            ]
+            ],
+            bDeferRender: true
         });
     }
 

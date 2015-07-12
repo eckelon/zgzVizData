@@ -10,7 +10,7 @@ function StationsMap(inputOptions){
     var self = this;
     
     //Init map:
-    var map = L.map('map').setView([41.6341708301351, -0.8948174397932326], 12);
+    var map = L.map('map').setView([41.6516913, -0.8949809], 12);
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
