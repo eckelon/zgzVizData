@@ -63,12 +63,12 @@ function ContaminantsChart(inputOptions){
 
     function contaminantToNumber(d) {
         if (d === null || d === undefined || typeof d === 'object') {
-            return undefined;
+            return null;
         } else {
             var num = Number(d);
 
             if(isNaN(num)){
-                return undefined;
+                return null;
             }
             return Number(d);
         }
@@ -238,7 +238,7 @@ function ContaminantsChart(inputOptions){
 
                 if (enabledContaminantsIndex[contaminant]) {
                     var value = contaminantToNumber(row[contaminant + '_d']);
-                    if(value === undefined){
+                    if(value === undefined || value === null){
                         return;
                     }
                     
@@ -271,7 +271,7 @@ function ContaminantsChart(inputOptions){
             data: tableData,
             orderMulti: true,
             language: {
-                url: '//cdn.datatables.net/plug-ins/1.10.7/i18n/Spanish.json'
+                url: 'http://cdn.datatables.net/plug-ins/1.10.7/i18n/Spanish.json'
             },
             order: [[2, 'desc']],//Initially order by date desc
             columns: [

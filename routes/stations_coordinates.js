@@ -5,8 +5,8 @@ var utils = require("../utils");
 var IESCITIES_DATASET_ID = 288;
         
 var IDS_PLACEHOLDER = '{IDS_PLACEHOLDER}';
-var SQL_COORDINATES = 'select max(id), coordenadas_p from docs group by coordenadas_p';
-var SQL_NAMES = 'select id, estacion from docs_estacion_smultiple where id in (' +  IDS_PLACEHOLDER + ')';
+var SQL_COORDINATES = 'select max(id) as id, coordenadas_p as coordenadas from docs group by coordenadas_p';
+var SQL_NAMES = "select parent_id as id, estacion from docs_estacion_smultiple where parent_id in ('" +  IDS_PLACEHOLDER + "')";
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -30,19 +30,26 @@ router.get('/', function (req, res, next) {
             return d.id;
         });
         
-        options.body = SQL_NAMES.replace(IDS_PLACEHOLDER, ids.join("', '"));
+        var namesSQL = SQL_NAMES.replace(IDS_PLACEHOLDER, ids.join("', '"));
+        options.body = namesSQL;
         utils.getJSON(options, function (status, namesAndIds) {
-            var finalData = [];
-            var namesIndexById = {};
-            for (var i = 0, max = namesAndIds.rows; i < max; i++) {
-                var row = namesAndIds.rows[i];
-                namesIndexById[row.id] = row.name;
+            if(!namesAndIds.rows || !namesAndIds.rows.length){
+                generateResponse([]);
+                return;
             }
             
-            for (var j = 0, max = coords.length; j < max; j++) {
-                var coord = coords[j];
+            var finalData = [];
+            var namesIndexById = {};
+            for (var i = 0, max = namesAndIds.rows.length; i < max; i++) {
+                var row = namesAndIds.rows[i];
+                namesIndexById[row.id] = row.estacion;
+            }
+            
+            for (var j = 0, max = coords.rows.length; j < max; j++) {
+                var coord = coords.rows[j];
                 
-                var coordParts = coord.coordenadas_p.split(',');
+                var coordParts = coord.coordenadas.split(',');
+                
                 finalData.push({
                     name: namesIndexById[coord.id],
                     coord1: coordParts[0],
