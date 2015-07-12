@@ -40,8 +40,11 @@
         <nav class="uk-navbar uk-margin-bottom">
             <a class="uk-navbar-brand uk-hidden-small" href="#"><i class="uk-icon uk-icon-database"></i> Zaragoza VizData</a>
             <ul class="uk-navbar-nav uk-hidden-small">
-                <li class="uk-active">
+                <li class="calidadAire uk-active">
                     <a href="#"><i class="uk-icon uk-icon-bar-chart"></i> Calidad del aire</a>
+                </li>
+                <li class="acercaDe">
+                    <a href="#"><i class="uk-icon uk-icon-bar-chart"></i> Acerca de</a>
                 </li>
             </ul>
             <a href="#offcanvas" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas></a>
@@ -50,91 +53,104 @@
         <div id="offcanvas" class="uk-offcanvas">
             <div class="uk-offcanvas-bar">
                 <ul class="uk-nav uk-nav-offcanvas">
-                    <li class="uk-active">
+                    <li class="calidadAire uk-active">
                         <a href="#"><i class="uk-icon uk-icon-bar-chart"></i> Calidad del aire</a>
+                    </li>
+                    <li class="acercaDe">
+                        <a href="#"><i class="uk-icon uk-icon-bar-chart"></i> Acerca de</a>
                     </li>
                 </ul>
             </div>
         </div>
         
-        <div class="uk-panel uk-panel-box">
-            <div id="filters-container" class="uk-margin">
-                <form class="uk-form uk-form-horizontal">
-                    <div class="uk-form-row">
-                        <label for="startDate" class="uk-form-label">Fecha inicio</label>
-                        <div class="uk-form-controls">
-                            <div class="uk-form-icon">
-                                <i class="uk-icon-calendar"></i>
-                                <input id="startDate" type="text" data-uk-datepicker="{format: 'DD/MM/YYYY'}">
+        <div id="tabs" class="uk-panel uk-panel-box">
+            <div id="calidadAireContainer">
+                <div id="filters-container" class="uk-margin">
+                    <form class="uk-form uk-form-horizontal">
+                        <div class="uk-form-row">
+                            <label for="startDate" class="uk-form-label">Fecha inicio</label>
+                            <div class="uk-form-controls">
+                                <div class="uk-form-icon">
+                                    <i class="uk-icon-calendar"></i>
+                                    <input id="startDate" type="text" data-uk-datepicker="{format: 'DD/MM/YYYY'}">
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="uk-form-row">
-                        <label for="endDate" class="uk-form-label">Fecha fin</label>
-                        <div class="uk-form-controls">
-                            <div class="uk-form-icon">
-                                <i class="uk-icon-calendar"></i>
-                                <input id="endDate" type="text" data-uk-datepicker="{format: 'DD/MM/YYYY'}">
+                        <div class="uk-form-row">
+                            <label for="endDate" class="uk-form-label">Fecha fin</label>
+                            <div class="uk-form-controls">
+                                <div class="uk-form-icon">
+                                    <i class="uk-icon-calendar"></i>
+                                    <input id="endDate" type="text" data-uk-datepicker="{format: 'DD/MM/YYYY'}">
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="uk-form-row">
-                        <span id="allContaminantsCheck" class="uk-form-label">Contaminantes</span>
-                        <div class="uk-form-controls uk-form-controls-text">
-                            <label><input id="check-o3" type="checkbox" checked> O&#x2083;</label>
-                            <label><input id="check-so2" type="checkbox" checked> SO&#x2082;</label>
-                            <label><input id="check-no2" type="checkbox" checked> NO&#x2082;</label>
-                            <label><input id="check-co" type="checkbox" checked> CO</label>
-                            <label><input id="check-pm10" type="checkbox" checked> PM&#x2081;&#x2080;</label>
-                            <label><input id="check-sh2" type="checkbox" checked> SH&#x2082;</label>
+                        <div class="uk-form-row">
+                            <span id="allContaminantsCheck" class="uk-form-label">Contaminantes</span>
+                            <div class="uk-form-controls uk-form-controls-text">
+                                <label><input id="check-o3" type="checkbox" checked> O&#x2083;</label>
+                                <label><input id="check-so2" type="checkbox" checked> SO&#x2082;</label>
+                                <label><input id="check-no2" type="checkbox" checked> NO&#x2082;</label>
+                                <label><input id="check-co" type="checkbox" checked> CO</label>
+                                <label><input id="check-pm10" type="checkbox" checked> PM&#x2081;&#x2080;</label>
+                                <label><input id="check-sh2" type="checkbox" checked> SH&#x2082;</label>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="uk-form-row">
-                        <span class="uk-form-label">Opacidad</span>
-                        <div class="uk-form-controls">
-                            <input type="range" min="0" max="1" value="0.2" step="0.01" name="opacity" id="opacity">
-                        </div>
-                    </div>
 
-                    <div class="uk-text-center uk-margin-top">
-                        <button id="apply" type="button" class="uk-button uk-button-primary">
-                            <i class="uk-icon uk-icon-check"></i> Aplicar
-                        </button>
-                    </div>
-                </form>
+                        <div class="uk-form-row">
+                            <span class="uk-form-label">Opacidad</span>
+                            <div class="uk-form-controls">
+                                <input type="range" min="0" max="1" value="0.2" step="0.01" name="opacity" id="opacity">
+                            </div>
+                        </div>
+
+                        <div class="uk-text-center uk-margin-top">
+                            <button id="apply" type="button" class="uk-button uk-button-primary">
+                                <i class="uk-icon uk-icon-check"></i> Aplicar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="parallel-container" class="parcoords" style="width:100%; height:300px; display: none;">
+                    <div class="loadingIndicator"><i class="uk-icon uk-icon-spinner uk-icon-spin"></i></div>
+                </div>
+
+                <div id="table-container" class="uk-margin-top" style="display: none;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>
+                                    Contaminante
+                                </th>
+                                <th>
+                                    Estación
+                                </th>
+                                <th>
+                                    Fecha
+                                </th>
+                                <th>
+                                    Valor
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="map" class="uk-margin-top" style="width: 100%; height: 300px;">
+                </div>
             </div>
-            
-            <div id="parallel-container" class="parcoords" style="width:100%; height:300px; display: none;">
-                <div class="loadingIndicator"><i class="uk-icon uk-icon-spinner uk-icon-spin"></i></div>
-            </div>
-            
-            <div id="table-container" class="uk-margin-top" style="display: none;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>
-                                Contaminante
-                            </th>
-                            <th>
-                                Estación
-                            </th>
-                            <th>
-                                Fecha
-                            </th>
-                            <th>
-                                Valor
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-            
-            <div id="map" class="uk-margin-top" style="width: 100%; height: 300px;">
+            <div id="acercaDeContainer">
+                <h1 class="uk-text-bold"><img alt="" src="images/favicon.png"> Zaragoza Viz Data</h3>
+                Zaragoza VizData es un experimento desarrollado por <a href="https://twitter.com/eduramiba">Eduardo Ramos</a> y <a href="https://twitter.com/eckelon">Jesús Ángel Samitier</a> para el ZaragozAppStore los días 10, 11 y 12 de julio de 2015.
+                El propósito de la aplicación es el de mostrar una gran cantidad de datos (provenientes de las APIs abiertas del Ayuntamiento de Zaragoza) en un espacio reducido,
+                como es el caso de la pantalla de un móvil.
+
+                El código de la aplicación se encuentra disponible en <a href="https://github.com/eckelon/zgzVizDatApp">GitHub</a>, así como <a href="https://github.com/eckelon/zgzVizData">el de la webapp</a> que hace sus veces de backend.
             </div>
             
             <div class="help uk-margin-top">
@@ -154,6 +170,21 @@
                 var contaminantsChart = new ContaminantsChart();
                 
                 var stationsMap = new StationsMap();
+                
+                function showTab(name){
+                    $('li.uk-active').removeClass('uk-active');
+                    $('li.' + name).addClass('uk-active');
+
+                    $("#tabs").children().hide();
+                    $("#" + name + "Container").show();
+                }
+                
+                $('.calidadAire a').click(function(){
+                    showTab('calidadAire');
+                });
+                $('.acercaDe a').click(function(){
+                    showTab('acercaDe');
+                });
             })();
         </script>
     </body>
