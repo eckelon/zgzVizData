@@ -15,11 +15,25 @@ var SQL = 'select s.estacion, d.fecha_dt, d.last_modified, d.o3_d, d.no2_d, d.pm
         ;
         
 var DEFAULT_START_DATE = '2014-01-01';
+var DEFAULT_END_DATE = null;
 
 var IESCITIES_DATASET_ID = 288;
 
 var NodeCache = require("node-cache");
 var cache = new NodeCache({stdTTL: 60 * 10, checkperiod: 60});
+
+function validateAndFormatInputDate(dateStr, defaultDate){
+    var date = moment(dateStr, "DD/MM/YYYY");
+    if(!date.isValid()){
+        date = moment(dateStr, "YYYY-MM-DD");
+    }
+    
+    if(date.isValid()){
+        return moment(date).format('YYYY-MM-DD');
+    }else{
+        return defaultDate;
+    }
+}
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -30,19 +44,15 @@ router.get('/', function (req, res, next) {
     var startDate = req.param('start');
     var endDate = req.param('end');
     
-    if(!moment(startDate, "YYYY-MM-DD").isValid()){
-        startDate = DEFAULT_START_DATE;
-    }
-    if(!moment(endDate, "YYYY-MM-DD").isValid()){
-        endDate = null;
-    }
+    startDate = validateAndFormatInputDate(startDate, DEFAULT_START_DATE);
+    endDate = validateAndFormatInputDate(endDate, DEFAULT_END_DATE);
     
     var finalSQL = SQL;
     
     if(startDate && endDate){
         finalSQL = finalSQL.replace(DATE_COND_PLACEHOLDER, "and fecha_dt between '" + startDate +"' AND '" + endDate + "'");
     }else{
-        finalSQL = finalSQL.replace(DATE_COND_PLACEHOLDER, "and fecha_dt >= '" + startDate);
+        finalSQL = finalSQL.replace(DATE_COND_PLACEHOLDER, "and fecha_dt >= '" + startDate + "'");
     }
     
     var cacheKey = finalSQL;

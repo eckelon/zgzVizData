@@ -15,6 +15,31 @@ input[data-uk-datepicker] {
     font-size: 60px;
 }
 
+#tabs > div {
+    min-height: 400px;
+}
+
+#acercaDeContainer > div {
+    max-width: 800px;
+}
+
+#filters-container {
+    max-width: 600px;
+}
+
+#map {
+    width: 100%; 
+    max-width: 600px; 
+    height: 300px;
+    
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.uk-navbar li a:hover {
+    cursor: pointer;
+}
+
 .parcoords .axis text {
     cursor: move;
     text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
