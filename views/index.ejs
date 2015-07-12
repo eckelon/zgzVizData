@@ -4,33 +4,33 @@
         <title>Zaragoza VizData</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
+
         <link rel="icon" type="image/png" href="images/favicon.png">
-        
+
         <!-- Libraries -->
         <link rel="stylesheet" href="lib/uikit/css/uikit.almost-flat.min.css" />
         <link rel="stylesheet" href="lib/uikit/css/components/datepicker.almost-flat.min.css" />
         <link rel="stylesheet" href="lib/uikit/css/components/form-select.almost-flat.min.css" />
-        
+
         <link rel="stylesheet" href="lib/datatables/css/jquery.dataTables.min.css" />
-        
+
         <link rel="stylesheet" href="lib/d3/parcoords/d3.parcoords.css" />
-        
+
         <link rel="stylesheet" href="lib/leaflet/leaflet.css" />
-        
+
         <script src="lib/jquery/jquery-1.11.3.min.js"></script>
-        
+
         <script src="lib/uikit/js/uikit.min.js"></script>
         <script src="lib/uikit/js/components/datepicker.min.js"></script>
         <script src="lib/uikit/js/components/form-select.min.js"></script>
-        
+
         <script src="lib/datatables/js/jquery.dataTables.min.js"></script>
-        
+
         <script src="lib/d3/d3.min.js"></script>
         <script src="lib/d3/parcoords/d3.parcoords.js"></script>
-        
+
         <script src="lib/leaflet/leaflet.js"></script>
-        
+
         <!-- Our scripts and styles -->
         <script src="js/parallel-coords.js"></script>
         <script src="js/stations-map.js"></script>
@@ -62,7 +62,7 @@
                 </ul>
             </div>
         </div>
-        
+
         <div id="tabs" class="uk-panel uk-panel-box">
             <div id="calidadAireContainer">
                 <div id="filters-container" class="uk-margin uk-container uk-container-center">
@@ -143,7 +143,7 @@
 
                 <div id="map" class="uk-margin-top">
                 </div>
-                
+
                 <div class="help uk-margin-top">
                     <i class="uk-icon uk-icon-question-circle uk-text-primary"></i> Aquí puedes visualizar las mediciones de la calidad del aire en diferentes estaciones de Zaragoza y filtrar de forma interactiva en el gráfico de coordenadas paralelas.
                 </div>
@@ -156,10 +156,12 @@
                     como es el caso de la pantalla de un móvil.
 
                     El código de la aplicación se encuentra disponible en <a href="https://github.com/eckelon/zgzVizDatApp">GitHub</a>, así como <a href="https://github.com/eckelon/zgzVizData">el de la webapp</a> que hace sus veces de backend.
+
+                    La aplicación móvil está disponible para <a href="app/zgzVizData.apk">Android aquí</a>. La idea es subirla a la Play Store en un futuro.
                 </div>
             </div>
         </div>
-        
+
         <div id="footer" class="uk-text-left uk-margin-top">
             <img title="Ayuntamiento de Zaragoza" alt="" src="images/zaragoza.png">
             &nbsp;
@@ -170,9 +172,9 @@
             (function(){
                 //Initialize contaminants view
                 var contaminantsChart = new ContaminantsChart();
-                
+
                 var stationsMap = new StationsMap();
-                
+
                 function showTab(name){
                     $('li.uk-active').removeClass('uk-active');
                     $('li.' + name).addClass('uk-active');
@@ -180,7 +182,7 @@
                     $("#tabs").children().hide();
                     $("#" + name + "Container").show();
                 }
-                
+
                 $('.calidadAire a').click(function(){
                     showTab('calidadAire');
                     return false;
