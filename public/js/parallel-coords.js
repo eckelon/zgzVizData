@@ -54,26 +54,6 @@ function ContaminantsChart(inputOptions){
         sh2: 'SH\u2082'
     };
 
-    var dimensionNames = [];
-
-    var dataTypes = {};
-
-    //All numbers by default:
-    var props = Object.getOwnPropertyNames(dimensions);
-    for (var i in props) {
-        var prop = props[i];
-
-        if ($.inArray(prop, ALL_CONTAMINANTS) !== -1 && !isContaminantEnabled(prop)) {
-            continue;
-        }
-
-        var name = dimensions[prop];
-        dataTypes[name] = 'number';
-        dimensionNames.push(name);
-    }
-
-    dataTypes[dimensions.station] = 'string';
-
     var fullTimeStringFormat = d3.time.format('%Y-%m-%dT%H:%M:%SZ');
     var datePartFormat = d3.time.format('%Y-%m-%d');
     var hourOfDayPartFormat = d3.time.format('%H:%M:%S');
@@ -115,8 +95,37 @@ function ContaminantsChart(inputOptions){
         $parallelContainer.find('canvas, svg').remove();//Remove any possible old data
         $parallelContainer.find('.loadingIndicator').hide();
 
+        var dimensionNames = [];
+
+        var dataTypes = {};
+
+        //All numbers by default:
+        var props = Object.getOwnPropertyNames(dimensions);
+        for (var i in props) {
+            var prop = props[i];
+
+            if ($.inArray(prop, ALL_CONTAMINANTS) !== -1 && !isContaminantEnabled(prop)) {
+                continue;
+            }
+
+            var name = dimensions[prop];
+            dataTypes[name] = 'number';
+            dimensionNames.push(name);
+        }
+
+        dataTypes[dimensions.station] = 'string';
+
         var parallelsData = [
         ];
+        
+        var enabledContaminantsIndex = {
+            o3: isContaminantEnabled('o3'),
+            so2: isContaminantEnabled('so2'),
+            no2: isContaminantEnabled('no2'),
+            co: isContaminantEnabled('co'),
+            pm10: isContaminantEnabled('pm10'),
+            sh2: isContaminantEnabled('sh2')
+        };
 
         for (var i = 0, max = data.rows.length; i < max; i++) {
             var row = data.rows[i];
@@ -132,7 +141,7 @@ function ContaminantsChart(inputOptions){
             parallelRow[dimensions.fulldate] = row.fecha_dt;
 
             function addContaminantData(contaminant) {
-                if (isContaminantEnabled(contaminant)) {
+                if (enabledContaminantsIndex[contaminant]) {
                     parallelRow[dimensions[contaminant]] = contaminantToNumber(row[contaminant + '_d']);
                 }
             }
@@ -167,9 +176,6 @@ function ContaminantsChart(inputOptions){
                 .reorderable()
                 ;
 
-
-        window.pc = parCoordsChart;//DEBUG
-        
         function applyBrushedData(){
             var brushedData = parCoordsChart.brushed();
             if(brushedData !== false){
@@ -210,6 +216,15 @@ function ContaminantsChart(inputOptions){
 
     function initTable(data){
         var tableData = [];
+        
+        var enabledContaminantsIndex = {
+            o3: isContaminantEnabled('o3'),
+            so2: isContaminantEnabled('so2'),
+            no2: isContaminantEnabled('no2'),
+            co: isContaminantEnabled('co'),
+            pm10: isContaminantEnabled('pm10'),
+            sh2: isContaminantEnabled('sh2')
+        };
 
         for (var i = 0, max = data.rows.length; i < max; i++) {
             var row = data.rows[i];
@@ -219,7 +234,12 @@ function ContaminantsChart(inputOptions){
                     unit = 'ug/m\u00B3';
                 }
 
-                if (isContaminantEnabled(contaminant)) {
+                if (enabledContaminantsIndex[contaminant]) {
+                    var value = contaminantToNumber(row[contaminant + '_d']);
+                    if(value === undefined){
+                        return;
+                    }
+                    
                     var date = fullTimeStringFormat.parse(row.fecha_dt);
 
                     var tableRow = {};
@@ -227,13 +247,7 @@ function ContaminantsChart(inputOptions){
                     tableRow.station = row.estacion;
                     tableRow.date = datePartFormat(date);
                     tableRow.time = hourOfDayPartFormat(date);
-
-                    var value = contaminantToNumber(row[contaminant + '_d']);
-                    if(value === undefined){
-                        tableRow.value = "---";
-                    }else{
-                        tableRow.value = value + ' ' + unit;
-                    }
+                    tableRow.value = value + ' ' + unit;
 
 
                     tableData.unshift(tableRow);//Add in reverse order so latest data shous up first
@@ -254,7 +268,6 @@ function ContaminantsChart(inputOptions){
         $table.DataTable().destroy();
         $table.DataTable({
             data: tableData,
-            pageLength: 100,
             orderMulti: true,
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.10.7/i18n/Spanish.json'
@@ -269,33 +282,56 @@ function ContaminantsChart(inputOptions){
             ]
         });
     }
-    
+
+    var lastStartDate = null;
+    var lastEndDate = null;
     function createChart() {
         $parallelContainer.find('.loadingIndicator').show();
         $parallelContainer.show();
 
-        $.ajax({
-            url: options.url,
-            timeout: 60 * 1000,//60 seconds
-            data: {
-                start: $startDate.val(),
-                end: $endDate.val()
-            },
-            type: 'GET',
-            dataType: 'JSON',
-            success: function(data){
-                if(!data.rows){
-                    alert("Error al obtener los datos. Por favor inténtalo más tarde");
-                    $parallelContainer.hide();
-                    $tableContainer.hide();
-                    return;
-                }
-                
-                lastLoadedData = data;
-                initTable(data);
-                initParallelCoordinates(data);
-            }
-        });
+        
+        function showError(){
+            alert("Error al obtener los datos. Por favor inténtalo más tarde");
+            $parallelContainer.hide();
+            $tableContainer.hide();
+        }
+
+        var startDate = $startDate.val();
+        var endDate = $endDate.val();
+        var doAjax = true;
+        if(lastLoadedData && startDate === lastStartDate && endDate === lastEndDate){
+            doAjax = false;
+        }
+        
+        lastStartDate = startDate;
+        lastEndDate = endDate;
+        
+        if(doAjax){
+            $.ajax({
+                url: options.url,
+                timeout: 60 * 1000,//60 seconds
+                data: {
+                    start: startDate,
+                    end: endDate
+                },
+                type: 'GET',
+                dataType: 'JSON',
+                success: function(data){
+                    if(!data.rows){
+                        showError();
+                        return;
+                    }
+
+                    lastLoadedData = data;
+                    initTable(data);
+                    initParallelCoordinates(data);
+                },
+                failure: showError
+            });
+        }else{
+            initTable(lastLoadedData);
+            initParallelCoordinates(lastLoadedData);
+        }
     }
     
     //Events:
