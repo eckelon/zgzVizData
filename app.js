@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var data = require('./routes/data');
+var stations_coordinates = require('./routes/stations_coordinates');
 
 var app = express();
 
@@ -24,6 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/data', data);
+app.use('/stations_coordinates', stations_coordinates);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

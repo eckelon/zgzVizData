@@ -24,7 +24,7 @@ function ContaminantsChart(inputOptions){
     var $endDate = $("#endDate");
     var $opacity = $("#opacity");
 
-    var datepickerFormat = d3.time.format("%Y-%m-%d");
+    var datepickerFormat = d3.time.format("%d/%m/%Y");
 
     //Initialize some values:
     var today = new Date();

@@ -16,7 +16,7 @@
         
         <link rel="stylesheet" href="lib/d3/parcoords/d3.parcoords.css" />
         
-        <link rel="stylesheet" href="lib/leaflet/" />
+        <link rel="stylesheet" href="lib/leaflet/leaflet.css" />
         
         <script src="lib/jquery/jquery-1.11.3.min.js"></script>
         
@@ -29,13 +29,15 @@
         <script src="lib/d3/d3.min.js"></script>
         <script src="lib/d3/parcoords/d3.parcoords.js"></script>
         
+        <script src="lib/leaflet/leaflet.js"></script>
+        
         <!-- Our scripts and styles -->
         <script src="js/parallel-coords.js"></script>
         <link rel="stylesheet" href="css/styles.css" />
     </head>
     <body>
         <nav class="uk-navbar uk-margin-bottom">
-            <a class="uk-navbar-brand uk-hidden-small" href="layouts_frontpage.html"><i class="uk-icon uk-icon-database"></i> Zaragoza VizData</a>
+            <a class="uk-navbar-brand uk-hidden-small" href="#"><i class="uk-icon uk-icon-database"></i> Zaragoza VizData</a>
             <ul class="uk-navbar-nav uk-hidden-small">
                 <li class="uk-active">
                     <a href="#"><i class="uk-icon uk-icon-bar-chart"></i> Calidad del aire</a>
@@ -62,7 +64,7 @@
                         <div class="uk-form-controls">
                             <div class="uk-form-icon">
                                 <i class="uk-icon-calendar"></i>
-                                <input id="startDate" type="text" data-uk-datepicker="{format: 'YYYY-MM-DD'}">
+                                <input id="startDate" type="text" data-uk-datepicker="{format: 'DD/MM/YYYY'}">
                             </div>
                         </div>
                     </div>
@@ -72,7 +74,7 @@
                         <div class="uk-form-controls">
                             <div class="uk-form-icon">
                                 <i class="uk-icon-calendar"></i>
-                                <input id="endDate" type="text" data-uk-datepicker="{format: 'YYYY-MM-DD'}">
+                                <input id="endDate" type="text" data-uk-datepicker="{format: 'DD/MM/YYYY'}">
                             </div>
                         </div>
                     </div>
@@ -134,6 +136,9 @@
                 </table>
             </div>
             
+            <div id="map" style="width: 100%; height: 300px;">
+            </div>
+            
             <div class="help uk-margin-top">
                 <i class="uk-icon uk-icon-question-circle uk-text-primary"></i> Aquí puedes visualizar las mediciones de la calidad del aire en diferentes estaciones de Zaragoza y filtrar de forma interactiva en el gráfico de coordenadas paralelas.
             </div>
@@ -142,6 +147,16 @@
             (function(){
                 //Initialize contaminants view
                 var contaminantsChart = new ContaminantsChart();
+                
+                var map = L.map('map').setView([51.505, -0.09], 13);
+
+                L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+
+                L.marker([51.5, -0.09]).addTo(map)
+                    .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+                    .openPopup();
             })();
         </script>
     </body>
