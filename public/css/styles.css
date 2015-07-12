@@ -15,6 +15,10 @@ input[data-uk-datepicker] {
     font-size: 60px;
 }
 
+#tabs > div {
+    min-height: 400px;
+}
+
 #acercaDeContainer > div {
     max-width: 800px;
 }
